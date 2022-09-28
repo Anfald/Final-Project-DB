@@ -109,13 +109,14 @@ class Question (models.Model):
     # persist question content for a course   RESTRICT
    question_text = models.TextField()
    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-   grade = models.IntegerField(default=0)
+   grade = models.FloatField() # here I put float because if the instructor want to make question with floating grade
    course = models.ForeignKey(Course, on_delete=models.CASCADE) # many to many cause some problem
    is_correct = models.IntegerField() # to save the corrected answer)
 
 def is_get_score(self, selected_ids):
       all_answers = self.choice_set.filter(is_correct=True).count()
       selected_correct = self.choice_set.filter(is_correct=True, id__in=selected_ids).count()
+      selected_incorrect = self.choice_set.filter(is_correct=False, id__in=selected_ids).count() # I add this to count incorrect answers 
       if all_answers == selected_correct:
           return True
       else:
@@ -153,8 +154,10 @@ class Choice(models.Model):
 
 class Submission(models.Model):
   enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
-  choices = models.ManyToManyField(Choice) # the manyto many relation here
-
+  choices = models.ManyToManyField(Choice) # the many to many relation here
+  
+def __str__(self):
+        return f"submission:{self.pk}"
 
 
 
