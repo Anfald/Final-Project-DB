@@ -107,10 +107,10 @@ class Enrollment(models.Model):
     # question grade/mark
 class Question (models.Model):
     # persist question content for a course   RESTRICT
-   question_text = models.TextField()
+   question_text = models.CharField(null=True,max_length=200)
+   course = models.ForeignKey(Course, on_delete=models.CASCADE,default="") # many to many cause some problem
    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
    grade = models.FloatField() # here I put float because if the instructor want to make question with floating grade
-   course = models.ForeignKey(Course, on_delete=models.CASCADE) # many to many cause some problem
    is_correct = models.IntegerField() # to save the corrected answer)
 
 def is_get_score(self, selected_ids):
@@ -133,7 +133,7 @@ def __str__(self):
     # Indicate if this choice of the question is a correct one or not
     # Other fields and methods you would like to design
 class Choice(models.Model):
- question = models.ForeignKey(Question, on_delete=models.CASCADE)
+ question = models.ForeignKey(Question, on_delete=models.CASCADE, default="")
  choice_text = models.TextField()
  is_correct= models.BooleanField()
 
